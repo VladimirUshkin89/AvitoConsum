@@ -57,7 +57,7 @@ accounts = {
         "password": "hG2Qr30okDCQ"
     },
     '383870255': {
-        "name": "Тюнинг Услуги Серёжа",
+        "name": "Тюнинг ателье",
         "login": "tuningA@fes-group.ru",
         "password": "fhW-fMS-x8c-X8N"
     },
@@ -110,6 +110,11 @@ accounts = {
         "name": "Detalno Innovation",
         "login": "mz_detalno_16@fes-group.ru",
         "password": "aV!To23934$00!"
+    },
+    '384602915': {
+        "name": "FesDetal",
+        "login": "FesDetal@protuning-company.ru",
+        "password": "Fesdetal0103/"
     },
     '11111': {
         "name": "llllll",
