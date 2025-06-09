@@ -42,12 +42,12 @@ accounts = {
         "password": "fh30984g0!!fjJ"
     },
     '370021362': {
-        "name": "Service Pro-Tuning Ross 263",
+        "name": "Fes-Service",
         "login": "k.lyubimova@fes-group.ru",
         "password": "0JRIb8cWxk7F"
     },
     '222117781': {
-        "name": "Pro-tuning",
+        "name": "Pro-Tuning - Тюнинг ателье",
         "login": "protuning-company@yandex.ru",
         "password": "fhW-fMS-x8c-X8N"
     },
@@ -115,6 +115,16 @@ accounts = {
         "name": "FesDetal",
         "login": "FesDetal@protuning-company.ru",
         "password": "Fesdetal0103/"
+    },
+    '399735632': {
+        "name": "Пункт запчастей",
+        "login": "mz_detalno_18@fes-group.ru",
+        "password": "93AvTo2024P!"
+    },
+    '11111111': {
+        "name": "llllll",
+        "login": "lllllll",
+        "password": "pppppppp"
     },
     '11111': {
         "name": "llllll",
