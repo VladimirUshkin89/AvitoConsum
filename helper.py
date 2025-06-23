@@ -2,6 +2,7 @@ import json
 import time
 import random
 from datetime import datetime, timedelta
+from data import accounts
 import re
 
 from selenium.webdriver.common.by import By
@@ -76,9 +77,10 @@ def authorisation(driver, LOGIN, PASSWORD, cab_id):
 
         human_delay(2, 5)
 
-        # получаем вчерашнюю дату
+        # получаем вчерашнюю дату <<<<<<<<<<<<<<<<<<<<<<<<<
         yesterday = datetime.now() - timedelta(days=1)
         data_str = yesterday.strftime("%Y-%m-%d")
+        data_str = "2025-06-21"
 
         # проверка id кабинета
         #checkCabinetId(driver, cab_id)
@@ -89,6 +91,7 @@ def authorisation(driver, LOGIN, PASSWORD, cab_id):
         human_delay(1, 4)
         #смена кабинета
         changeCabinet(driver, cab_id)
+
 
         human_delay(1, 3)
     except Exception as e:
@@ -256,3 +259,29 @@ def get_cookies_in_avito(driver):
     cookie_str = '; '.join([f"{c['name']}={c['value']}" for c in cookies])
 
     return cookie_str
+
+
+# записываем в файл
+def write_file(id_cab, cookie, spending):
+    file_name = "data.json"
+
+    try:
+        with open(file_name, 'r', encoding="utf=8") as file:
+            data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        data = []
+
+    new_data = {
+        id_cab: {
+            "cabinet-name": accounts[id_cab]["name"],
+            "cookies": cookie,
+            "spending": spending
+        }
+    }
+
+    data.append(new_data)
+    with open(file_name, 'w', encoding='utf=8') as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
+
+
+
