@@ -22,7 +22,7 @@ accounts = {
         "password": "Detali14101977!"
     },
     '399735434': {
-        "name": "Ваши детали МСК",
+        "name": "Ваши детали 2",
         "login": "mz_detalno_17@fes-group.ru",
         "password": "aV!To23934$00!"
     },
@@ -33,11 +33,11 @@ accounts = {
     },
     '288379466': {
         "name": "Москва наличие",
-        "login": "m.nalichie@protuning-company.ru",
+        "login": "AnastasuaMoskva@gmail.com",
         "password": "fhW-fMS-x8c-X8N"
     },
     '382585193': {
-        "name": "Краснодар запасной",
+        "name": "FesAuto MSK",
         "login": "autoru.krasnodar@fes-group.ru",
         "password": "fh30984g0!!fjJ"
     },
@@ -53,7 +53,7 @@ accounts = {
     },
     '305271980': {
         "name": "Сервисный центр",
-        "login": "FesService@protuning-company.ru",
+        "login": "FesService@fesservice.ru",
         "password": "hG2Qr30okDCQ"
     },
     '383870255': {
@@ -113,7 +113,7 @@ accounts = {
     },
     '384602915': {
         "name": "FesDetal",
-        "login": "FesDetal@protuning-company.ru",
+        "login": "fesdetal@fesdetal.ru",
         "password": "Fesdetal0103/"
     },
     '399735632': {

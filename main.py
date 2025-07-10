@@ -55,8 +55,10 @@ for uId in userId.split(" "):
     cookies = get_cookies_in_avito(driver)
 
     spending = get_spending(driver)
-    if spending == None:
-        time.sleep(4)
+
+    while spending == None:
+        print("\nПерезагрузка расходов\n")
+        time.sleep(5)
         spending = get_spending(driver)
 
 

@@ -2,6 +2,9 @@ import json
 import time
 import random
 from datetime import datetime, timedelta
+
+from selenium.webdriver import Keys
+
 from data import accounts
 import re
 
@@ -32,15 +35,30 @@ def safe_type(element, text, driver):
 
 # авторизуемся на авито и переходим на страницу получения расходов
 def authorisation(driver, LOGIN, PASSWORD, cab_id):
+
+    count = 0
+
     try:
         # Навигация
         driver.get("https://www.avito.ru/")
-        WebDriverWait(driver, 15).until(
+
+        # Ждём появления попапа и кликаем "Отлично"
+        try:
+            WebDriverWait(driver, 35).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Отлично')]"))
+            ).click()
+            print("Попап закрыт")
+        except:
+            print("Попап не появился")
+
+        # Далее кликаем на кнопку входа
+        WebDriverWait(driver, 35).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-marker='header/login-button']"))
         ).click()
 
+
         # Ожидание стабильности формы
-        form = WebDriverWait(driver, 15).until(
+        form = WebDriverWait(driver, 35).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "form[data-marker='login-form']"))
         )
         time.sleep(1)  # Дополнительная пауза для AJAX
@@ -52,7 +70,7 @@ def authorisation(driver, LOGIN, PASSWORD, cab_id):
 
         # Ввод логина
         driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center'});", email_input)
-        ActionChains(driver).move_to_element(email_input).pause(0.5).click().perform()
+        ActionChains(driver).move_to_element(email_input).pause(0.3).click().perform()
         safe_type(email_input, LOGIN, driver)
 
         # Ввод пароля
@@ -80,7 +98,7 @@ def authorisation(driver, LOGIN, PASSWORD, cab_id):
         # получаем вчерашнюю дату <<<<<<<<<<<<<<<<<<<<<<<<<
         yesterday = datetime.now() - timedelta(days=1)
         data_str = yesterday.strftime("%Y-%m-%d")
-        data_str = "2025-06-21"
+        #data_str = "2025-06-27"
 
         # проверка id кабинета
         #checkCabinetId(driver, cab_id)
@@ -90,7 +108,7 @@ def authorisation(driver, LOGIN, PASSWORD, cab_id):
 
         human_delay(1, 4)
         #смена кабинета
-        changeCabinet(driver, cab_id)
+        changeCabinet(driver, cab_id, data_str)
 
 
         human_delay(1, 3)
@@ -170,6 +188,7 @@ def checkCabinetId(driver, cab_id):
 
         except Exception as e:
             print("Не удалось найти элемент с номером профиля")
+            input()
             raise e
 
 
@@ -194,54 +213,69 @@ def checkCabinetId(driver, cab_id):
         raise
 
 # смена кабинета
-def changeCabinet(driver, cab_id):
+def changeCabinet(driver, cab_id, data_str):
 
 
-    # 1. Наводим курсор на аватар для открытия меню
-    try:
-        avatar = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//a[contains(@data-marker, 'header/username-button')]//img[@alt='Аватар']")
+
+    while True:
+
+        # 1. Наводим курсор на аватар для открытия меню
+        try:
+            avatar = WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//a[contains(@data-marker, 'header/username-button')]//img[@alt='Аватар']")
+                )
             )
-        )
-        # Используем ActionChains для наведения
-        ActionChains(driver).move_to_element(avatar).perform()
-    except Exception as e:
-        print(f"Не удалось навести на аватар: {e}")
-        raise
+            # Используем ActionChains для наведения
+            ActionChains(driver).move_to_element(avatar).perform()
+        except Exception as e:
+            print(f"Не удалось навести на аватар: {e}")
+            #input()
+            url = f"https://www.avito.ru/profile/statistics/spending?dateFrom={data_str}&dateTo={data_str}"
+            driver.get(url)
+            continue
+            raise
 
-    # 2. Ждем появления пункта меню и кликаем
-    try:
-        menu_item = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//a[@href='#profile/switch' and contains(text(), 'Мои профили')]")
+        # 2. Ждем появления пункта меню и кликаем
+        try:
+            menu_item = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//a[@href='#profile/switch' and contains(text(), 'Мои профили')]")
+                )
             )
-        )
-        # Дополнительная страховка - скроллим к элементу
-        driver.execute_script("arguments[0].scrollIntoViewIfNeeded();", menu_item)
-        menu_item.click()
-    except Exception as e:
-        print(f"Не удалось выбрать пункт меню: {e}")
-        raise
+            # Дополнительная страховка - скроллим к элементу
+            driver.execute_script("arguments[0].scrollIntoViewIfNeeded();", menu_item)
+            menu_item.click()
+        except Exception as e:
+            print(f"Не удалось выбрать пункт меню: {e}")
+            url = f"https://www.avito.ru/profile/statistics/spending?dateFrom={data_str}&dateTo={data_str}"
+            driver.get(url)
+            continue
+            raise
 
-    # Формируем CSS-селектор с использованием cab_id
-    css_selector = f"div[data-marker='component-profile-switch/profile-{cab_id}']"
+        # Формируем CSS-селектор с использованием cab_id
+        css_selector = f"div[data-marker='component-profile-switch/profile-{cab_id}']"
 
 
-    try:
-        # Ждем появления элемента и кликаем
-        human_delay(0.5, 1)
-        profile_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, css_selector))
-        )
-        # Скролим к элементу (если не виден)
-        driver.execute_script("arguments[0].scrollIntoViewIfNeeded();", profile_element)
-        profile_element.click()
-    except Exception as e:
-        print(f"Ошибка при клике на профиль {cab_id}: {e}")
-        # Дополнительная отладка: вывести страницу или сделать скриншот
-        # driver.save_screenshot(f"profile_{cab_id}_error.png")
-        raise
+        try:
+            # Ждем появления элемента и кликаем
+            human_delay(0.5, 1)
+            profile_element = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, css_selector))
+            )
+            # Скролим к элементу (если не виден)
+            driver.execute_script("arguments[0].scrollIntoViewIfNeeded();", profile_element)
+            profile_element.click()
+        except Exception as e:
+            print(f"Ошибка при клике на профиль {cab_id}: {e}")
+            # Дополнительная отладка: вывести страницу или сделать скриншот
+            # driver.save_screenshot(f"profile_{cab_id}_error.png")
+            url = f"https://www.avito.ru/profile/statistics/spending?dateFrom={data_str}&dateTo={data_str}"
+            driver.get(url)
+            continue
+            raise
+
+        break
 
 
 
